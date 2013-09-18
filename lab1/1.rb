@@ -1,10 +1,13 @@
 ﻿require 'socket'
-srvr = TCPServer.open('127.0.0.1',3000)
-while (server =srvr.accept)
+TCPServer.open('127.0.0.1',3000) {|srvr|
+if (server =srvr.accept) 
+	loop{
         string  = server.gets.chomp
-	server.print "/n/r#{string} /n/r"
+	server.print "#{string.reverse} \n\r"
 	puts "#{string}"
         if string == "sd" 
-	  server.close 
-	end
+	  server.close
+	end 
+	}		
 end
+}
