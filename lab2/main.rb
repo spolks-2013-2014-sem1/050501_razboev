@@ -1,6 +1,7 @@
 require 'socket'
 include Socket::Constants
 socket  = Socket.new(AF_INET,SOCK_STREAM,0)
+socket.setsockopt(Socket::SOL_SOCKET,Socket::SO_REUSEADDR,true)
 sockaddr = Socket.sockaddr_in(3000,'localhost')
 socket.bind(sockaddr)
 socket.listen(5)
