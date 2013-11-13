@@ -14,6 +14,11 @@ file = File.open(INPUT_FILE_NAME, READONLY)
 
 client.connect(Socket.sockaddr_in(PORT,HOST ))
 
+trap('EXIT') do
+at_axit {puts AT_EXIT}
+exit
+end
+
 begin
 while data = file.read(BUFFER_SIZE)
     client.write(data)

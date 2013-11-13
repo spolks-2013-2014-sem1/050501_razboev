@@ -13,6 +13,11 @@ server.listen(1)
 
 client, client_addrinfo = server.accept
 
+trap('EXIT') do
+at_axit {puts AT_EXIT}
+exit
+end
+
 begin
 	while  data = client.read(BUFFER_SIZE)
            file.write(data)
