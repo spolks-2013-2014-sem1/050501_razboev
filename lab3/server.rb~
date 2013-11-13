@@ -15,7 +15,7 @@ client, client_addrinfo = server.accept
 begin
 	while  data = client.read(1)
            file.write(data)
-           puts data
+          # puts data
     end
 
 rescue

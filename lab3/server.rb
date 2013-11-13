@@ -1,11 +1,12 @@
 require 'socket'
+require_relative "config.rb"
 include Socket::Constants
 
 server  = Socket.new(AF_INET,SOCK_STREAM,0)
 server.setsockopt(Socket::SOL_SOCKET,Socket::SO_REUSEADDR,true)
-file = File.open("output", 'w+')
+file = File.open(OUTPUT_FILE_NAME, OVERWRITE)
 
-sockaddr = Socket.sockaddr_in(3005,'localhost')
+sockaddr = Socket.sockaddr_in(PORT,HOST)
 server.bind(sockaddr)
 server.listen(1)
 
@@ -13,13 +14,13 @@ server.listen(1)
 client, client_addrinfo = server.accept
 
 begin
-	while  data = client.read(1)
+	while  data = client.read(BUFFER_SIZE)
            file.write(data)
           # puts data
     end
 
 rescue
-	puts "fail"
+	puts ERROR
     raise
 
 ensure
