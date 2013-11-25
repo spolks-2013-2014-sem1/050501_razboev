@@ -9,6 +9,7 @@ include Socket::Constants
 
 client  = Socket.new(AF_INET,SOCK_STREAM,0)
 client.setsockopt(Socket::SOL_SOCKET,Socket::SO_REUSEADDR,true)
+client.setsockopt(:SOCKET, Socket::SO_OOBINLINE, true)
 file = File.open(INPUT_FILE_NAME, READONLY)
 
 
@@ -24,12 +25,20 @@ send_count = 0;
 
 begin
 while data = file.read(BUFFER_SIZE)
-    client.write(data)
-   # puts data
-     send_count+=1
-     send_len+=data.length
+    _,w, = IO.select(nil,[client],nil,1)
+    if !w 
+		break
     end
-
+	if send_to = w.shift
+    	send_to.send(data,0)
+  		# puts data
+     	send_count+=1
+     	send_len+=data.length
+     	if send_count %5 == 0 
+         	send_to.send(MSG_SYMBOL,Socket::MSG_OOB)
+		end	
+	end
+end
 
 rescue 
    puts ERROR

@@ -4,15 +4,14 @@ include Socket::Constants
 
 server  = Socket.new(AF_INET,SOCK_STREAM,0)
 server.setsockopt(Socket::SOL_SOCKET,Socket::SO_REUSEADDR,true)
+
 file = File.open(OUTPUT_FILE_NAME, OVERWRITE)
 
 sockaddr = Socket.sockaddr_in(PORT,HOST)
 server.bind(sockaddr)
 server.listen(1)
 
-
 client, client_addrinfo = server.accept
-
 trap('INT') do
 at_axit {puts AT_EXIT}
 exit
@@ -22,15 +21,30 @@ recieve_len = 0;
 recieve_count = 0;
 
 begin
-	while  data = client.read(BUFFER_SIZE)
-           file.write(data)
-          # puts data
-	   recieve_count+=1;
-           recieve_len+=data.length;
+	loop do
+ 		r,_,e = IO.select([client],nil,[client],1)
+        if (!r ) 
+			break
+		end  
+        
+        if recv_from = r.shift 
+            data = recv_from.recv(BUFFER_SIZE)
+            if data.empty?
+				break
+			end
+            file.write(data);
+            recieve_len+=data.length
+            recieve_count+=1
+		end
+        if recv_from =e.shift 
+            data = recv_from.recv(BUFFER_SIZE,Socket::MSG_OOB) 
+  			puts data
+		end 
     end
 
+
 rescue
-	puts ERROR
+	puts
     raise
 
 ensure
