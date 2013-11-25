@@ -12,13 +12,14 @@ client.setsockopt(Socket::SOL_SOCKET,Socket::SO_REUSEADDR,true)
 client.setsockopt(:SOCKET, Socket::SO_OOBINLINE, true)
 file = File.open(INPUT_FILE_NAME, READONLY)
 
-
-client.connect(Socket.sockaddr_in(PORT,HOST ))
-
 trap('INT') do
 at_axit {puts AT_EXIT}
 exit
 end
+
+client.connect(Socket.sockaddr_in(PORT,HOST ))
+
+
 
 send_len = 0;
 send_count = 0;
@@ -34,7 +35,7 @@ while data = file.read(BUFFER_SIZE)
   		# puts data
      	send_count+=1
      	send_len+=data.length
-     	if send_count %5 == 0 
+     	if send_count % MSG_COUNT == 0 
          	send_to.send(MSG_SYMBOL,Socket::MSG_OOB)
 		end	
 	end

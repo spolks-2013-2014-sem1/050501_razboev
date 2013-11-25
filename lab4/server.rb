@@ -10,12 +10,13 @@ file = File.open(OUTPUT_FILE_NAME, OVERWRITE)
 sockaddr = Socket.sockaddr_in(PORT,HOST)
 server.bind(sockaddr)
 server.listen(1)
-
-client, client_addrinfo = server.accept
 trap('INT') do
-at_axit {puts AT_EXIT}
+puts
+puts AT_EXIT
 exit
 end
+client, client_addrinfo = server.accept
+
 
 recieve_len = 0;
 recieve_count = 0;
