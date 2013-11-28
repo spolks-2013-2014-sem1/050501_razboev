@@ -7,7 +7,7 @@
 	BUFFER_SIZE = 1024 #for example
 	ERROR = "error"
 	AT_EXIT = "at_exit"
-	OUTPUT_FILE_NAME = "output.jpg"
+	OUTPUT_FILE_NAME = "output"
     OVERWRITE = "w+"
     MSG_SYMBOL = 'R'
 	MSG_COUNT = 20

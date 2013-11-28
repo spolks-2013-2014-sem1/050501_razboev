@@ -1,23 +1,29 @@
 require 'socket'
+require 'slop'
 require_relative "config.rb"
 include Socket::Constants
 
+opts = Slop.parse(help: false) do
+  on :h, :host=, 'Host'
+  on :f, :file=, 'Filename'
+  on :p, :port=, 'Port'
+end
 
-
-
-
+trap('INT') do
+puts AT_EXIT
+exit
+end
 
 client  = Socket.new(AF_INET,SOCK_STREAM,0)
 client.setsockopt(Socket::SOL_SOCKET,Socket::SO_REUSEADDR,true)
-file = File.open(INPUT_FILE_NAME, READONLY)
+file = File.open(opts[:f], READONLY)
+
+port = opts[:p] || PORT
+host = opts[:h] || HOST
+ 
+client.connect(Socket.sockaddr_in(port,host ))
 
 
-client.connect(Socket.sockaddr_in(PORT,HOST ))
-
-trap('EXIT') do
-at_axit {puts AT_EXIT}
-exit
-end
 
 begin
 while data = file.read(BUFFER_SIZE)
